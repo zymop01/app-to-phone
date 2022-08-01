@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:background="#CCDDFF"
+    android:id="@+id/popUpInvite">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:focusable="true"
+        android:focusableInTouchMode="true"
+        android:orientation="horizontal">
+
+        <EditText
+            android:id="@+id/popUpInviteET"
+            android:layout_width="match_parent"
+            android:layout_height="55dp"
+            android:layout_marginRight="150dp"
+            android:hint="Add" />
+
+        <ImageView
+            android:id="@+id/AddButtonInInvite"
+            android:layout_width="85dp"
+            android:layout_height="55dp"
+            android:layout_marginRight="70dp"
+            android:layout_alignParentRight="true"
+            app:srcCompat="@drawable/add_button" />
+
+        <ImageView
+            android:id="@+id/CancelButtonInInvite"
+            android:layout_width="85dp"
+            android:layout_height="55dp"
+            android:layout_alignParentRight="true"
+            app:srcCompat="@drawable/cancel_button" />
+
+    </RelativeLayout>
+
+    <ListView
+        android:id="@+id/ListViewInInvite"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginTop="75dp"
+        android:choiceMode="singleChoice" />
+
+
+</RelativeLayout>

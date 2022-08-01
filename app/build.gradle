@@ -1,0 +1,82 @@
+apply plugin: 'com.android.application'
+
+android {
+    compileSdkVersion 31
+    buildToolsVersion '31.0.0'
+    defaultConfig {
+        applicationId "com.fm.icelink.chat"
+        minSdkVersion 23
+        targetSdkVersion 31
+        versionCode 1
+        versionName "1.0"
+        multiDexEnabled true
+    }
+    signingConfigs {
+        release {
+            storeFile file('insecure.jks')
+            storePassword 'insecure'
+            keyAlias 'insecure'
+            keyPassword 'insecure'
+        }
+    }
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            signingConfig signingConfigs.release
+        }
+    }
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+    dexOptions {
+        javaMaxHeapSize "4g"
+    }
+    packagingOptions {
+        exclude 'lib/linux_armv7/*'
+        exclude 'lib/linux_armv8/*'
+        exclude 'lib/linux_arm64/*'
+        exclude 'lib/linux_x64/*'
+        exclude 'lib/linux_x86/*'
+        exclude '**/libaudioprocessingfm.so'
+        exclude '**/libopenh264fm.so'
+        exclude '**/libopusfm.so'
+        exclude '**/libvpxfm.so'
+        exclude '**/libyuvfm.so'
+    }
+    lintOptions {
+        abortOnError false
+    }
+    compileOptions {
+        targetCompatibility 1.8
+        sourceCompatibility 1.8
+    }
+    sourceSets {
+        main {
+            jniLibs {
+                srcDirs = [
+                        'src/main/jniLibs'
+                ]
+            }
+        }
+    }
+}
+
+dependencies {
+    implementation fileTree(include: ['*.jar'], dir: '../lib')
+
+
+    implementation files('../lib/fm.jar')
+    implementation files('../lib/fm.websync.jar')
+    implementation files('../lib/fm.websync.chat.jar')
+    implementation files('../lib/fm.websync.subscribers.jar')
+
+    implementation 'androidx.appcompat:appcompat:1.4.0'
+    implementation 'com.google.android.material:material:1.4.0'
+    implementation 'androidx.constraintlayout:constraintlayout:2.1.2'
+    implementation 'com.android.support:multidex:1.0.3'
+    implementation 'androidx.legacy:legacy-support-v4:1.0.0'
+    testImplementation 'junit:junit:4.13.2'
+    
+}

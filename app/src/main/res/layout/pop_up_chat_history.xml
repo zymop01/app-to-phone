@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+android:layout_width="match_parent"
+android:layout_height="match_parent"
+xmlns:app="http://schemas.android.com/apk/res-auto"
+android:background="#CCDDFF"
+android:id="@+id/popUpChatHistory">
+
+    <TextView
+        android:id="@+id/titleInChatHistory"
+        android:layout_width="match_parent"
+        android:layout_height="100dp"
+        android:text="Chat History"
+        android:textSize="25sp" />
+
+    <ListView
+        android:id="@+id/ListViewInChatHistory"
+        android:layout_width="match_parent"
+        android:layout_height="500dp"
+        android:layout_marginTop="110dp"
+        android:choiceMode="singleChoice" />
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="650dp"
+        android:focusable="true"
+        android:focusableInTouchMode="true"
+        android:orientation="horizontal">
+
+        <ImageView
+            android:id="@+id/exitButtonInChatHistory"
+            android:layout_width="85dp"
+            android:layout_height="55dp"
+            android:layout_alignParentRight="true"
+            app:srcCompat="@drawable/return_button" />
+
+    </RelativeLayout>
+
+</RelativeLayout>

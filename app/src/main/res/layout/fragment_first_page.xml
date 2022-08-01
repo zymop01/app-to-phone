@@ -1,0 +1,170 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    tools:context=".FirstPageFragment">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="120dp"
+                android:background="#CCDDFF"
+                android:orientation="vertical">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:weightSum="4">
+
+                    <Button
+                        android:id="@+id/SetCurrentIdButtonInNewMain"
+                        android:layout_width="85dp"
+                        android:layout_height="wrap_content"
+                        android:text="ID"
+                        android:textSize="12sp"
+                        android:layout_weight="1"/>
+
+                    <Button
+                        android:id="@+id/SettingButtonInNewMain"
+                        android:layout_width="85dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="10dp"
+                        android:text="SETTING"
+                        android:textSize="12sp"
+                        android:layout_weight="1"/>
+
+                    <Button
+                        android:id="@+id/CameraButtonInNewMain"
+                        android:layout_width="85dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="10dp"
+                        android:text="CAMERA"
+                        android:textSize="12sp"
+                        android:layout_weight="1"/>
+
+                    <ImageView
+                        android:id="@+id/AddButtonInNewMain"
+                        android:layout_width="85dp"
+                        android:layout_height="match_parent"
+                        android:layout_marginStart="10dp"
+                        app:srcCompat="@drawable/add_button"
+                        android:layout_weight="1"/>
+
+                </LinearLayout>
+
+                <TextView
+                    android:id="@+id/TitleInNewMain"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="20dp"
+                    android:text=""
+                    android:textSize="25sp" />
+
+            </LinearLayout>
+
+            <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="horizontal">
+
+                <ListView
+                    android:id="@+id/contactListViewInNewMain"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_marginTop="30dp"
+                    android:layout_marginRight="150dp"
+                    android:layout_marginBottom="150dp"
+                    android:choiceMode="singleChoice" />
+
+                <ListView
+                    android:id="@+id/ringtoneListViewInNewMain"
+                    android:layout_width="150dp"
+                    android:layout_height="match_parent"
+                    android:layout_marginTop="30dp"
+                    android:layout_alignParentRight="true"
+                    android:layout_marginBottom="150dp"
+                    android:choiceMode="singleChoice" />
+
+            </RelativeLayout>
+
+        </LinearLayout>
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="120dp"
+            android:layout_alignParentBottom="true"
+            android:background="#CCDDFF"
+            android:orientation="vertical">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="35dp"
+                android:orientation="horizontal"
+                android:weightSum="4">
+
+                <Button
+                    android:id="@+id/CallButtonInNewMain"
+                    android:layout_width="90dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="10dp"
+                    android:text="Call"
+                    android:textSize="12sp"
+                    android:layout_weight="1"/>
+
+                <Button
+                    android:id="@+id/ContactButtonInNewMain"
+                    android:layout_width="90dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="10dp"
+                    android:text="Contact"
+                    android:textSize="12sp"
+                    android:layout_weight="1"/>
+
+                <Button
+                    android:id="@+id/HistoryButtonInNewMain"
+                    android:layout_width="90dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="10dp"
+                    android:text="History"
+                    android:textSize="12sp"
+                    android:layout_weight="1"/>
+
+                <Button
+                    android:id="@+id/MissingCallsButtonInNewMain"
+                    android:layout_width="90dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="10dp"
+                    android:text="Missing"
+                    android:textSize="12sp"
+                    android:layout_weight="1"/>
+
+                <!--
+
+                <Button
+                    android:id="@+id/ZoomButtonInNewMain"
+                    android:layout_width="90dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="10dp"
+                    android:text="Zoom" />
+
+                -->
+
+            </LinearLayout>
+
+        </RelativeLayout>
+
+    </RelativeLayout>
+
+</FrameLayout>

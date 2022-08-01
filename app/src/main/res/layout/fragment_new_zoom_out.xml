@@ -1,0 +1,162 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    tools:context=".NewZoomOutFragment">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:id="@+id/NewZoomOutRelativeLayout">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:weightSum="5">
+
+            <ImageView
+                android:id="@+id/NewZoomOutMuteAudioButton"
+                android:layout_width="60dp"
+                android:layout_height="60dp"
+                android:layout_marginStart="10dp"
+                app:srcCompat="@drawable/audio_button"
+                android:layout_weight="1"/>
+
+            <ImageView
+                android:id="@+id/NewZoomOutMuteVideoButton"
+                android:layout_width="60dp"
+                android:layout_height="60dp"
+                android:layout_marginStart="10dp"
+                app:srcCompat="@drawable/video_button"
+                android:layout_weight="1"/>
+
+            <ImageView
+                android:id="@+id/NewZoomOutTextButton"
+                android:layout_width="60dp"
+                android:layout_height="60dp"
+                android:layout_marginStart="10dp"
+                app:srcCompat="@drawable/text_button"
+                android:layout_weight="1"/>
+
+
+            <ImageView
+                android:id="@+id/NewZoomOutInviteButton"
+                android:layout_width="60dp"
+                android:layout_height="60dp"
+                android:layout_marginStart="10dp"
+                app:srcCompat="@drawable/invite_button"
+                android:layout_weight="1"/>
+
+            <ImageView
+                android:id="@+id/NewZoomOutExitButton"
+                android:layout_width="60dp"
+                android:layout_height="60dp"
+                android:layout_marginStart="10dp"
+                app:srcCompat="@drawable/return_button"
+                android:layout_weight="1"/>
+
+
+        </LinearLayout>
+
+
+
+
+        <RelativeLayout
+            android:id="@+id/NewZoomInRemoteContainer"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="#000000" />
+
+        <RelativeLayout
+            android:id="@+id/NewZoomInLocalContainer"
+            android:layout_width="200dp"
+            android:layout_height="200dp"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentRight="true"
+            android:background="#000000" />
+
+        <RelativeLayout
+            android:id="@+id/NewTextContainer"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:focusable="true"
+            android:focusableInTouchMode="true"
+            android:background="#FFFFFF"
+            android:layout_marginTop="100dp">
+
+            <ScrollView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:fillViewport="true"
+                android:id="@+id/mainScroll">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_marginTop="90dp">
+
+                    <TextView
+                        android:id="@+id/NewChattingLog"
+                        android:layout_width="match_parent"
+                        android:layout_height="1000dp"
+                        android:layout_alignParentLeft="true"
+                        android:layout_alignParentRight="true"
+                        android:gravity="top"
+                        android:scrollbars="vertical" />
+
+
+                </LinearLayout>
+
+            </ScrollView>
+
+
+            <EditText
+                android:id="@+id/NewChattingET"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentTop="true"
+                android:layout_alignParentRight="true"
+                android:ems="10"
+                android:hint="Message">
+
+            </EditText>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:weightSum="3">
+
+                <Button
+                    android:id="@+id/NewChattingSendButton"
+                    android:layout_width="100dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="40dp"
+                    android:text="Send"
+                    android:layout_weight="1"/>
+
+                <Button
+                    android:id="@+id/NewChattingChatHistoryButton"
+                    android:layout_width="100dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="50dp"
+                    android:layout_marginTop="40dp"
+                    android:text="History"
+                    android:layout_weight="1"/>
+
+            </LinearLayout>
+
+
+        </RelativeLayout>
+
+
+
+
+
+    </RelativeLayout>
+
+</FrameLayout>

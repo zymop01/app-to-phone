@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:id="@+id/nineScreens"
+    android:layout_height="match_parent">
+
+    <FrameLayout
+        android:id="@+id/contactListFrame"
+        android:layout_width="match_parent"
+        android:layout_height="200dp"
+        android:layout_alignParentStart="true">
+
+    </FrameLayout>
+
+    <RelativeLayout
+        android:id="@+id/restScreens"
+        android:layout_width="match_parent"
+        android:layout_height="800dp"
+        android:layout_marginTop="200dp">
+
+        <LinearLayout
+            android:id="@+id/restFrame"
+            android:layout_width="match_parent"
+            android:layout_height="800dp"
+            android:orientation="vertical">
+
+            <ScrollView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:fillViewport="true"
+                android:id="@+id/mainScroll">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="3000dp"
+                    android:orientation="vertical">
+
+
+                    <FrameLayout
+                        android:id="@+id/ContactListButtonControlFragmentSection"
+                        android:layout_width="match_parent"
+                        android:layout_height="400dp">
+
+                    </FrameLayout>
+
+                    <FrameLayout
+                        android:id="@+id/InCallButtonControlFragmentSection"
+                        android:layout_width="match_parent"
+                        android:layout_height="300dp">
+
+                    </FrameLayout>
+
+                    <FrameLayout
+                        android:id="@+id/CallWaitingButtonControlFragmentSection"
+                        android:layout_width="match_parent"
+                        android:layout_height="300dp">
+
+                    </FrameLayout>
+
+                    <FrameLayout
+                        android:id="@+id/InComingCallButtonControlFragmentSection"
+                        android:layout_width="match_parent"
+                        android:layout_height="300dp">
+
+                    </FrameLayout>
+
+                    <FrameLayout
+                        android:id="@+id/ZoomInLocalMediaFragmentSection"
+                        android:layout_width="match_parent"
+                        android:layout_height="300dp">
+
+                    </FrameLayout>
+
+                    <FrameLayout
+                        android:id="@+id/ZoomOutLocalMediaFragmentSection"
+                        android:layout_width="match_parent"
+                        android:layout_height="300dp">
+
+                    </FrameLayout>
+
+                    <FrameLayout
+                        android:id="@+id/ZoomInRemoteMediaFragmentSection"
+                        android:layout_width="match_parent"
+                        android:layout_height="300dp">
+
+                    </FrameLayout>
+
+                    <FrameLayout
+                        android:id="@+id/ZoomOutRemoteMediaFragmentSection"
+                        android:layout_width="match_parent"
+                        android:layout_height="300dp">
+
+                    </FrameLayout>
+
+                    <FrameLayout
+                        android:id="@+id/TextChattingFragmentSection"
+                        android:layout_width="match_parent"
+                        android:layout_height="500dp">
+
+                    </FrameLayout>
+
+                    <FrameLayout
+                        android:id="@+id/LandLineButtonControlFragmentSection"
+                        android:layout_width="match_parent"
+                        android:layout_height="300dp">
+
+                    </FrameLayout>
+
+                </LinearLayout>
+
+            </ScrollView>
+
+        </LinearLayout>
+
+    </RelativeLayout>
+
+
+</RelativeLayout>

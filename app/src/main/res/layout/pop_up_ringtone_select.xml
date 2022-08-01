@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#CCDDFF"
+    android:id="@+id/popUpRingtoneSelect">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:focusable="true"
+        android:focusableInTouchMode="true"
+        android:orientation="horizontal">
+
+        <TextView
+            android:id="@+id/selectTvInRingtoneSelect"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Select Ringtone"
+            android:textSize="25sp"/>
+
+    </RelativeLayout>
+
+    <ListView
+        android:id="@+id/ListViewInRingtoneSelect"
+        android:layout_width="match_parent"
+        android:layout_height="400dp"
+        android:layout_marginTop="50dp"
+        android:choiceMode="singleChoice" />
+
+    <Button
+        android:id="@+id/confirmBtnInRingtoneSelect"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="450dp"
+        android:layout_marginStart="80dp"
+        android:text="Confirm"/>
+
+    <Button
+        android:id="@+id/CancelBtnInRingtoneSelect"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="450dp"
+        android:layout_alignParentRight="true"
+        android:layout_marginRight="80dp"
+        android:text="Cancel"/>
+
+</RelativeLayout>
