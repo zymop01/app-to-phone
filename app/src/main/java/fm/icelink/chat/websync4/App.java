@@ -244,10 +244,6 @@ public class App {
     public boolean lastAudioMuted = false, neededToChangeAudio = false;
     public boolean canExit = false, willExit = false, conferenceOwnerWantsToLeave = false;
 
-    public int maxRemoteMediaOnScreen = 12;
-    public DLinkedList dLinkedList = new DLinkedList(maxRemoteMediaOnScreen);
-    public boolean isNotModifyingScreen = true;
-    public int modifyingScreenCounter = 0;
 
     public HashSet<String> recordedName = new HashSet<>(), recordedName2 = new HashSet<>();
     public boolean OwnerNoticedInvitation = false;
@@ -571,22 +567,6 @@ public class App {
         videoStream.setLocalSend(enableVideoSend);
         videoStream.setLocalReceive(enableVideoReceive);
 
-        remoteMedia.addOnAudioLevel(new IAction1<Double>() {
-            @Override
-            public void invoke(Double level) {
-                if (level > 0.05) { //0.01
-                    if (remoteMedia != null) {
-                        if (isNotModifyingScreen) {
-                            dLinkedList.put(peerName, -1);
-                            isNotModifyingScreen = false;
-                        }
-                    }
-                }
-            }
-        });
-
-
-
         connection = new Connection(new Stream[]{audioStream, videoStream});
         connection.setIceServers(iceServers);
 
@@ -638,17 +618,11 @@ public class App {
 
         connection.addOnStateChange(new IAction1<Connection>() {
             public void invoke(Connection c) {
-                /**
-                 * connected
-                 */
+
                 if (c.getState() == ConnectionState.Connected)
                 {
                     textListener.onPeerJoined(peerName);
-                    /**
-                     * if lastLetter == 2, then it is in individual conference
-                     */
-                    char lastLetter = sessionId.charAt(app.getSessionId().length()-1);
-                    if (lastLetter == '2') dLinkedList.put(peerName, -1);
+
                 }
                 else if (c.getState() == ConnectionState.Closing ||
                         c.getState() == ConnectionState.Failing) {
@@ -674,11 +648,7 @@ public class App {
                         if (connectionsCount.get(peerName) > 0)
                             connectionsCount.put(peerName, connectionsCount.get(peerName)-1);
                         if (connectionsCount.get(peerName) == 0) {
-                            /**
-                             * double linked list removes peerName
-                             * when the connection is closed
-                             */
-                            dLinkedList.remove(peerName);
+
                             remoteMediaTable.remove(peerName);
                             SessionSelectorActivity.remoteMediaTable.remove(peerName);
                         }
@@ -697,11 +667,6 @@ public class App {
                         if (connectionsCount.get(peerName) > 0)
                             connectionsCount.put(peerName, connectionsCount.get(peerName)-1);
                         if (connectionsCount.get(peerName) == 0) {
-                            /**
-                             * double linked list removes peerName
-                             * when the connection is Failed
-                             */
-                            dLinkedList.remove(peerName);
                             remoteMediaTable.remove(peerName);
                             SessionSelectorActivity.remoteMediaTable.remove(peerName);
                         }

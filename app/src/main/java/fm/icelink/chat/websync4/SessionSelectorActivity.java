@@ -2181,7 +2181,8 @@ public class SessionSelectorActivity extends AppCompatActivity implements App.On
                     makingCallFragment.declineButtonClicked = false;
                 }
 
-                if ((groupChatOn && !app.beingModifiedConnections)
+                if ((groupChatOn || app.getSessionId().charAt(app.getSessionId().length()-1) == '2')
+                        && !app.beingModifiedConnections
                         && remoteMediaTable.size() < app.remoteMediaTable.size()
                         && newZoomOutFragment.isZoomOutLayoutManagerReady
                         && !app.newConnectionOccupied) {
@@ -2195,31 +2196,6 @@ public class SessionSelectorActivity extends AppCompatActivity implements App.On
                     }
                     Log.d("ppppp+: n2", Integer.toString(num));
                     Log.d("ppppp+: remoteMediaTableSize", Integer.toString(remoteMediaTable.size()));
-                }
-                if (app.getSessionId().charAt(app.getSessionId().length()-1) == '2'
-                        && !app.beingModifiedConnections
-                        && newZoomOutFragment.isZoomOutLayoutManagerReady
-                        && !app.newConnectionOccupied) {
-                    /**
-                     * remove unneeded remote medias
-                     */
-                    Set<String> unneeded = app.dLinkedList.getUnneeded();
-                    for (String str : unneeded) {
-                        if (remoteMediaTable.containsKey(str)) {
-                            newZoomOutFragment.remoteLayoutManager.removeRemoteView(app.remoteMediaTable.get(str).getId());
-                            remoteMediaTable.remove(str);
-                        }
-                    }
-                    /**
-                     * add needed remote medias
-                     */
-                    Set<String> curr = app.dLinkedList.getCurrent();
-                    for (String str : curr) {
-                        if (!remoteMediaTable.containsKey(str)) {
-                            newZoomOutFragment.remoteLayoutManager.addRemoteView(app.remoteMediaTable.get(str).getId(), app.remoteMediaTable.get(str).getView());
-                            remoteMediaTable.put(str, app.remoteMediaTable.get(str));
-                        }
-                    }
                 }
 
                 if (app.needResetRemoteMedias) {
@@ -2448,16 +2424,6 @@ public class SessionSelectorActivity extends AppCompatActivity implements App.On
                     allowedToJoinConference2(app.neededToReJoinConference2TimeOutConferenceId);
                     app.neededToReJoinConference2TimeOut = false;
                     app.neededToReJoinConference2TimeOutBackConference1 = false;
-                }
-                if (!app.isNotModifyingScreen) {
-                    app.modifyingScreenCounter = 1;
-                }
-                if (app.modifyingScreenCounter >= 1) {
-                    app.modifyingScreenCounter++;
-                    if (app.modifyingScreenCounter == 2) {
-                        app.modifyingScreenCounter = 0;
-                        app.isNotModifyingScreen = true;
-                    }
                 }
 
                 if (!isNetworkConnected() || !internetIsConnected()) {
