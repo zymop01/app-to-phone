@@ -1156,6 +1156,7 @@ public class SessionSelectorActivity extends AppCompatActivity implements App.On
                 });
 
         AlertDialog alert11 = builder1.create();
+        alert11.setCanceledOnTouchOutside(false);
         alert11.show();
     }
 
@@ -1937,6 +1938,7 @@ public class SessionSelectorActivity extends AppCompatActivity implements App.On
                     else {
                         if (app.recordedName.size() > 0) {
                             shortToast("last invitation is not finished");
+                            app.exitButtonClicked = false;
                             app.willExit = false;
                         }
                         else if (app.recordedName2.size() > 0)
