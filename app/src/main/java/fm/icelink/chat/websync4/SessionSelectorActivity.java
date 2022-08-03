@@ -24,6 +24,7 @@ import android.media.MediaPlayer;
 import android.media.Ringtone;
 import android.media.RingtoneManager;
 import android.media.projection.MediaProjectionManager;
+import android.net.ConnectivityManager;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -155,7 +156,7 @@ public class SessionSelectorActivity extends AppCompatActivity implements App.On
     private String inviter;
     private boolean getContactListFinished = false;
     private boolean groupChatOn = false;
-
+    private boolean InternetConnectDialogIsOn = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -309,6 +310,10 @@ public class SessionSelectorActivity extends AppCompatActivity implements App.On
 
     public void onPeerJoined(String name) {
         final String message = "COMMAND@ " + name + " has joined.\n";
+        if (app.recordedName.contains(name)) {
+            app.recordedName.remove(name);
+            app.recordedName2.add(name);
+        }
         writeLine(new SpannableString(message)
         {{
             setSpan(new StyleSpan(Typeface.BOLD), 0, message.length(), 0);
@@ -318,7 +323,7 @@ public class SessionSelectorActivity extends AppCompatActivity implements App.On
     public void onPeerLeft(String name) {
         final String message = "COMMAND@ " + name + " has left.\n";
         app.removeName(name);
-
+        if (app.recordedName2.contains(name)) app.recordedName2.remove(name);
         //if (app.getSessionId().equals("9619889a64f2a4332") || app.getSessionId().equals("d252badfc5e6cef62") || app.getSessionId().equals("f4b1292eba0c54f72") || app.getSessionId().equals("e1cf30f7e9b5775b2")) {
         char lastLetter = app.getSessionId().charAt(app.getSessionId().length()-1);
         if (lastLetter == '2') {
@@ -555,6 +560,36 @@ public class SessionSelectorActivity extends AppCompatActivity implements App.On
                             setFragment(R.id.newMainFrame, firstPageFragment);
                         }
                     }
+
+                    if (s.contains("COMMAND@ conference Owner wants to leave")) {
+                        writeString("leaving message received");
+                        //app.conferenceOwnerWantsToLeave = true;
+                        runOnUiThread(new Runnable()
+                        {
+                            public void run()
+                            {
+                                popUpDialogOfOwnersLeaving();
+                            }
+                        });
+                    }
+
+                    if (s.contains("COMMAND@ request inviting:")) {
+                        app.recordedName.add(separated[4]);
+                        Log.d("recordedNames", separated[4]);
+                        app.recordedName.add(separated[7]);
+                        Log.d("recordedNames", separated[7]);
+                        writeString("COMMAND@ owner noticed invitation");
+                    }
+                    if (s.contains("COMMAND@ owner noticed invitation")) {
+                        app.OwnerNoticedInvitation = true;
+                    }
+                    /*
+                    if (app.conferenceOwnerWantsToLeave) {
+                        app.canExit = true;
+                        app.conferenceOwnerWantsToLeave = false;
+                    }
+
+                     */
                     /*
                     if (s.contains("COMMAND@ exit") && !s.contains(app.getCurrentId()+"1")) {
                         if (app.threadTwoOn) {
@@ -1080,10 +1115,63 @@ public class SessionSelectorActivity extends AppCompatActivity implements App.On
         alert11.show();
     }
 
+    public void popUpDialogOfInternetConnect() {
+        InternetConnectDialogIsOn = true;
+        AlertDialog.Builder builder1 = new AlertDialog.Builder(SessionSelectorActivity.this);
+        builder1.setMessage("No internet connection!");
+        builder1.setCancelable(true);
+
+        builder1.setPositiveButton(
+                "Okay",
+                new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        InternetConnectDialogIsOn = false;
+                        dialog.cancel();
+                    }
+                });
+
+        AlertDialog alert11 = builder1.create();
+        alert11.show();
+    }
+
+    public void popUpDialogOfOwnersLeaving() {
+        AlertDialog.Builder builder1 = new AlertDialog.Builder(SessionSelectorActivity.this);
+        builder1.setMessage("Conference Owner wants to end this conference.");
+        builder1.setCancelable(true);
+
+        builder1.setPositiveButton(
+                "Leave",
+                new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        //if (app.getSessionId().charAt(app.getSessionId().length()-1) == '2')
+                            //app.canExit = true;
+                        dialog.cancel();
+                    }
+                });
+
+        AlertDialog alert11 = builder1.create();
+        alert11.show();
+    }
+
+
     public void setRingtoneClicked(Contacts contacts) {
         showPopUpRingtoneSelect(contacts);
     }
 
+
+    private boolean isNetworkConnected() {
+        ConnectivityManager cm = (ConnectivityManager) this.getSystemService(Context.CONNECTIVITY_SERVICE);
+        return cm.getActiveNetworkInfo() != null;
+    }
+
+    public boolean internetIsConnected() {
+        try {
+            String command = "ping -c 1 google.com";
+            return (Runtime.getRuntime().exec(command).waitFor() == 0);
+        } catch (Exception e) {
+            return false;
+        }
+    }
 
     public void showPopUpWindow() { //inviteButton
         // inflate the layout of the popup window
@@ -1152,8 +1240,17 @@ public class SessionSelectorActivity extends AppCompatActivity implements App.On
                 else if (!app.names.contains(curr)
                         && !curr.equals(app.getCurrentId())) {
                     app.lastAudioMuted = newZoomOutFragment.audioMuted;
+                    if (app.getSessionId().equals(app.getCurrentId()+"2")) {
+                        app.recordedName.add(curr);
+                        app.OwnerNoticedInvitation = true;
+                    }
+                    else {
+                        writeString("COMMAND@ request inviting: " + app.getCurrentId() + " is inviting " + curr + " .");
+                    }
+
                     app.forcedExit = true;
                     app.inviteStr = curr;
+
                     app.startInviting = true;
 
                     popupWindow.dismiss();
@@ -1805,6 +1902,44 @@ public class SessionSelectorActivity extends AppCompatActivity implements App.On
                 }
 
                 if (newZoomOutFragment.newZoomOutExitButtonClicked) {
+                    /*
+                    if (app.willExit) {
+                        shortToast("waiting others' response");
+                    }
+                    if (!app.canExit) {
+                        if (app.getSessionId().equals(app.getCurrentId() + "2")) {
+                            writeString("COMMAND@ conference Owner wants to leave");
+                            app.willExit = true;
+                        }
+                        else {
+                            app.canExit = true;
+                        }
+                    }
+
+                     */
+                    app.canExit = true;
+                    newZoomOutFragment.newZoomOutExitButtonClicked = false;
+                }
+                if (app.willExit) {
+                    if (app.remoteMediaTable.size() == 0
+                            && app.recordedName.size() == 0 && app.recordedName2.size() == 0) {
+                        app.canExit = true;
+                        app.willExit = false;
+                    }
+                    else {
+                        if (app.recordedName.size() > 0) {
+                            shortToast("last invitation is not finished");
+                            app.willExit = false;
+                        }
+                        else if (app.recordedName2.size() > 0)
+                            shortToast("waiting others' response");
+                        //app.willExit = false;
+                    }
+                }
+
+                if (app.canExit) {
+                    app.canExit = false;
+                    app.willExit = false;
                     hideSoftKeyBoard();
                     app.Service1Thread2Active = true;
                     app.Service3On = false;
@@ -1827,7 +1962,8 @@ public class SessionSelectorActivity extends AppCompatActivity implements App.On
                     }
                     app.isInConference = false;
                     app.neededToRejoinConference1 = true;
-                    newZoomOutFragment.newZoomOutExitButtonClicked = false;
+
+
                 }
                 /*
                 if (app.duplicateConnectionsOccurred) {
@@ -1858,7 +1994,8 @@ public class SessionSelectorActivity extends AppCompatActivity implements App.On
 
                  */
 
-                if (app.forcedExit) {
+                if (app.forcedExit && app.OwnerNoticedInvitation) {
+                    app.OwnerNoticedInvitation = false;
                     hideSoftKeyBoard();
                     app.Service1Thread2Active = true;
                     app.Service3Active = true;
@@ -1870,6 +2007,9 @@ public class SessionSelectorActivity extends AppCompatActivity implements App.On
                     zoomUpdated = false;
                     newZoomOutFragment.localLayoutManager.unsetLocalView();
                     newZoomOutFragment.remoteLayoutManager.removeRemoteViews();
+                    //remoteMediaTable.clear();
+                    //app.remoteMediaTable.clear();
+                    //app.dLinkedList.removeAll();
                     if (app.localViewReady = true)
                         app.stopLocalMedia();
                     if (!groupChatOn) {
@@ -2041,7 +2181,7 @@ public class SessionSelectorActivity extends AppCompatActivity implements App.On
                     makingCallFragment.declineButtonClicked = false;
                 }
 
-                if ((groupChatOn || app.getSessionId().charAt(app.getSessionId().length()-1) == '2' && !app.beingModifiedConnections)
+                if ((groupChatOn && !app.beingModifiedConnections)
                         && remoteMediaTable.size() < app.remoteMediaTable.size()
                         && newZoomOutFragment.isZoomOutLayoutManagerReady
                         && !app.newConnectionOccupied) {
@@ -2056,6 +2196,32 @@ public class SessionSelectorActivity extends AppCompatActivity implements App.On
                     Log.d("ppppp+: n2", Integer.toString(num));
                     Log.d("ppppp+: remoteMediaTableSize", Integer.toString(remoteMediaTable.size()));
                 }
+                if (app.getSessionId().charAt(app.getSessionId().length()-1) == '2'
+                        && !app.beingModifiedConnections
+                        && newZoomOutFragment.isZoomOutLayoutManagerReady
+                        && !app.newConnectionOccupied) {
+                    /**
+                     * remove unneeded remote medias
+                     */
+                    Set<String> unneeded = app.dLinkedList.getUnneeded();
+                    for (String str : unneeded) {
+                        if (remoteMediaTable.containsKey(str)) {
+                            newZoomOutFragment.remoteLayoutManager.removeRemoteView(app.remoteMediaTable.get(str).getId());
+                            remoteMediaTable.remove(str);
+                        }
+                    }
+                    /**
+                     * add needed remote medias
+                     */
+                    Set<String> curr = app.dLinkedList.getCurrent();
+                    for (String str : curr) {
+                        if (!remoteMediaTable.containsKey(str)) {
+                            newZoomOutFragment.remoteLayoutManager.addRemoteView(app.remoteMediaTable.get(str).getId(), app.remoteMediaTable.get(str).getView());
+                            remoteMediaTable.put(str, app.remoteMediaTable.get(str));
+                        }
+                    }
+                }
+
                 if (app.needResetRemoteMedias) {
                     newZoomOutFragment.remoteLayoutManager.removeRemoteViews();
                 }
@@ -2283,6 +2449,29 @@ public class SessionSelectorActivity extends AppCompatActivity implements App.On
                     app.neededToReJoinConference2TimeOut = false;
                     app.neededToReJoinConference2TimeOutBackConference1 = false;
                 }
+                if (!app.isNotModifyingScreen) {
+                    app.modifyingScreenCounter = 1;
+                }
+                if (app.modifyingScreenCounter >= 1) {
+                    app.modifyingScreenCounter++;
+                    if (app.modifyingScreenCounter == 2) {
+                        app.modifyingScreenCounter = 0;
+                        app.isNotModifyingScreen = true;
+                    }
+                }
+
+                if (!isNetworkConnected() || !internetIsConnected()) {
+                    if (!InternetConnectDialogIsOn) {
+                        runOnUiThread(new Runnable()
+                        {
+                            public void run()
+                            {
+                                popUpDialogOfInternetConnect();
+                            }
+                        });
+                    }
+                }
+
                 try {
                     Thread.sleep(1000);
                 } catch (InterruptedException e) {

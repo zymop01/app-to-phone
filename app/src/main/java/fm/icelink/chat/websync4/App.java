@@ -242,6 +242,15 @@ public class App {
     public boolean goEmptyFragment = false;
     public boolean isInConference = false;
     public boolean lastAudioMuted = false, neededToChangeAudio = false;
+    public boolean canExit = false, willExit = false, conferenceOwnerWantsToLeave = false;
+
+    public int maxRemoteMediaOnScreen = 12;
+    public DLinkedList dLinkedList = new DLinkedList(maxRemoteMediaOnScreen);
+    public boolean isNotModifyingScreen = true;
+    public int modifyingScreenCounter = 0;
+
+    public HashSet<String> recordedName = new HashSet<>(), recordedName2 = new HashSet<>();
+    public boolean OwnerNoticedInvitation = false;
     //public boolean startHeartBeat = false, inviteCheck = false;
     //--
     public synchronized void setActivity4ToForegroundCalled(boolean b) {
@@ -562,6 +571,22 @@ public class App {
         videoStream.setLocalSend(enableVideoSend);
         videoStream.setLocalReceive(enableVideoReceive);
 
+        remoteMedia.addOnAudioLevel(new IAction1<Double>() {
+            @Override
+            public void invoke(Double level) {
+                if (level > 0.05) { //0.01
+                    if (remoteMedia != null) {
+                        if (isNotModifyingScreen) {
+                            dLinkedList.put(peerName, -1);
+                            isNotModifyingScreen = false;
+                        }
+                    }
+                }
+            }
+        });
+
+
+
         connection = new Connection(new Stream[]{audioStream, videoStream});
         connection.setIceServers(iceServers);
 
@@ -582,6 +607,7 @@ public class App {
             if (sessionId.charAt(app.getSessionId().length()-1) == '2' || groupChatStarted) {
                 if (!remoteMediaTable.containsKey(peerName)) {
                     remoteMediaTable.put(peerName, remoteMedia);
+
                     int i = remoteMediaTable.size();
                     android.util.Log.d("pppp+: i", Integer.toString(i));
                 }
@@ -612,11 +638,17 @@ public class App {
 
         connection.addOnStateChange(new IAction1<Connection>() {
             public void invoke(Connection c) {
+                /**
+                 * connected
+                 */
                 if (c.getState() == ConnectionState.Connected)
                 {
                     textListener.onPeerJoined(peerName);
-                    android.util.Log.d("addRemote", "new");
-
+                    /**
+                     * if lastLetter == 2, then it is in individual conference
+                     */
+                    char lastLetter = sessionId.charAt(app.getSessionId().length()-1);
+                    if (lastLetter == '2') dLinkedList.put(peerName, -1);
                 }
                 else if (c.getState() == ConnectionState.Closing ||
                         c.getState() == ConnectionState.Failing) {
@@ -631,57 +663,49 @@ public class App {
                 }
                 else if (c.getState() == ConnectionState.Closed) {
                     textListener.onPeerLeft(peerName);
-
                     char lastLetter = sessionId.charAt(app.getSessionId().length()-1);
                     if (lastLetter == '2' || groupChatStarted) {
-                        android.util.Log.d("ppppp1: lastLetter", ""+lastLetter);
                         if (zoomInNow)
                             SessionSelectorActivity.newZoomInFragment.remoteLayoutManager.removeRemoteView(remoteMedia.getId());
                         else
                             SessionSelectorActivity.newZoomOutFragment.remoteLayoutManager.removeRemoteView(remoteMedia.getId());
-
-
                     }
                     if (connectionsCount.containsKey(peerName)) {
                         if (connectionsCount.get(peerName) > 0)
                             connectionsCount.put(peerName, connectionsCount.get(peerName)-1);
-                        android.util.Log.d("ppppp+: connectionsCount", ""+peerName);
-                        android.util.Log.d("ppppp+: connectionsCount", ""+Integer.toString(connectionsCount.get(peerName)));
                         if (connectionsCount.get(peerName) == 0) {
+                            /**
+                             * double linked list removes peerName
+                             * when the connection is closed
+                             */
+                            dLinkedList.remove(peerName);
                             remoteMediaTable.remove(peerName);
                             SessionSelectorActivity.remoteMediaTable.remove(peerName);
-
-                            android.util.Log.d("ppppp+: remove", peerName);
                         }
                     }
-                    //if (connections.containsKey(peerName)) connections.remove(peerName);
                 }
                 else if (c.getState() == ConnectionState.Failed) {
                     char lastLetter = sessionId.charAt(app.getSessionId().length()-1);
                     if (lastLetter == '2' || groupChatStarted) {
-                        android.util.Log.d("ppppp1: lastLetter", ""+lastLetter);
                         if (zoomInNow)
                             SessionSelectorActivity.newZoomInFragment.remoteLayoutManager.removeRemoteView(remoteMedia.getId());
                         else
                             SessionSelectorActivity.newZoomOutFragment.remoteLayoutManager.removeRemoteView(remoteMedia.getId());
-                        //SessionSelectorActivity.remoteMediaTable.remove(peerName);
-                        //remoteMediaTable.remove(peerName);
-
                     }
                     textListener.onPeerLeft(peerName);
                     if (connectionsCount.containsKey(peerName)) {
                         if (connectionsCount.get(peerName) > 0)
                             connectionsCount.put(peerName, connectionsCount.get(peerName)-1);
-                        android.util.Log.d("ppppp+: connectionsCount", ""+peerName);
-                        android.util.Log.d("ppppp+: connectionsCount", ""+Integer.toString(connectionsCount.get(peerName)));
                         if (connectionsCount.get(peerName) == 0) {
+                            /**
+                             * double linked list removes peerName
+                             * when the connection is Failed
+                             */
+                            dLinkedList.remove(peerName);
                             remoteMediaTable.remove(peerName);
                             SessionSelectorActivity.remoteMediaTable.remove(peerName);
-
-                            android.util.Log.d("ppppp+: remove", peerName);
                         }
                     }
-                    //if (connections.containsKey(peerName)) connections.remove(peerName);
                     if (!SIGNAL_MANUALLY)
                         signalling.reconnect(remoteClient, c);
                 }
