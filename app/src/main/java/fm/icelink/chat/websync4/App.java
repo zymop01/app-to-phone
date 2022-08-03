@@ -244,12 +244,12 @@ public class App {
     public boolean lastAudioMuted = false, neededToChangeAudio = false;
     public boolean canExit = false, willExit = false, conferenceOwnerWantsToLeave = false;
 
-    /*
+
     public int maxRemoteMediaOnScreen = 12;
     public DLinkedList dLinkedList = new DLinkedList(maxRemoteMediaOnScreen);
     public boolean isNotModifyingScreen = true;
     public int modifyingScreenCounter = 0;
-     */
+
 
     public boolean exitButtonClicked = false;
 
@@ -575,7 +575,7 @@ public class App {
         videoStream.setLocalSend(enableVideoSend);
         videoStream.setLocalReceive(enableVideoReceive);
 
-        /*
+
         remoteMedia.addOnAudioLevel(new IAction1<Double>() {
             @Override
             public void invoke(Double level) {
@@ -590,7 +590,7 @@ public class App {
             }
         });
 
-         */
+
 
 
 
@@ -655,7 +655,7 @@ public class App {
                      * if lastLetter == 2, then it is in individual conference
                      */
                     char lastLetter = sessionId.charAt(app.getSessionId().length()-1);
-                    //if (lastLetter == '2') dLinkedList.put(peerName, -1);
+                    if (lastLetter == '2') dLinkedList.put(peerName, -1);
                 }
                 else if (c.getState() == ConnectionState.Closing ||
                         c.getState() == ConnectionState.Failing) {
@@ -685,7 +685,7 @@ public class App {
                              * double linked list removes peerName
                              * when the connection is closed
                              */
-                            //dLinkedList.remove(peerName);
+                            dLinkedList.remove(peerName);
                             remoteMediaTable.remove(peerName);
                             SessionSelectorActivity.remoteMediaTable.remove(peerName);
                         }
@@ -708,7 +708,7 @@ public class App {
                              * double linked list removes peerName
                              * when the connection is Failed
                              */
-                            //dLinkedList.remove(peerName);
+                            dLinkedList.remove(peerName);
                             remoteMediaTable.remove(peerName);
                             SessionSelectorActivity.remoteMediaTable.remove(peerName);
                         }
