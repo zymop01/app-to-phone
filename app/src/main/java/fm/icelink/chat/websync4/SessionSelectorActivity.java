@@ -157,6 +157,8 @@ public class SessionSelectorActivity extends AppCompatActivity implements App.On
     private boolean getContactListFinished = false;
     private boolean groupChatOn = false;
     private boolean InternetConnectDialogIsOn = false;
+    private boolean DialogOfOwnersLeavingIsOn = false;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -564,13 +566,15 @@ public class SessionSelectorActivity extends AppCompatActivity implements App.On
                     if (s.contains("COMMAND@ conference Owner wants to leave")) {
                         writeString("leaving message received");
                         //app.conferenceOwnerWantsToLeave = true;
-                        runOnUiThread(new Runnable()
-                        {
-                            public void run()
+                        if (!DialogOfOwnersLeavingIsOn) {
+                            runOnUiThread(new Runnable()
                             {
-                                popUpDialogOfOwnersLeaving();
-                            }
-                        });
+                                public void run()
+                                {
+                                    popUpDialogOfOwnersLeaving();
+                                }
+                            });
+                        }
                     }
 
                     if (s.contains("COMMAND@ request inviting:")) {
@@ -1135,6 +1139,7 @@ public class SessionSelectorActivity extends AppCompatActivity implements App.On
     }
 
     public void popUpDialogOfOwnersLeaving() {
+        DialogOfOwnersLeavingIsOn = true;
         AlertDialog.Builder builder1 = new AlertDialog.Builder(SessionSelectorActivity.this);
         builder1.setMessage("Conference Owner wants to end this conference.");
         builder1.setCancelable(true);
@@ -1143,8 +1148,9 @@ public class SessionSelectorActivity extends AppCompatActivity implements App.On
                 "Leave",
                 new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
-                        //if (app.getSessionId().charAt(app.getSessionId().length()-1) == '2')
-                            //app.canExit = true;
+                        if (app.getSessionId().charAt(app.getSessionId().length()-1) == '2')
+                            app.canExit = true;
+                        DialogOfOwnersLeavingIsOn = false;
                         dialog.cancel();
                     }
                 });
@@ -1902,22 +1908,24 @@ public class SessionSelectorActivity extends AppCompatActivity implements App.On
                 }
 
                 if (newZoomOutFragment.newZoomOutExitButtonClicked) {
-                    /*
-                    if (app.willExit) {
+                    if (!app.exitButtonClicked) {
+                        app.exitButtonClicked = true;
+                        if (app.willExit) {
+                            shortToast("waiting others' response");
+                        }
+                        if (!app.canExit) {
+                            if (app.getSessionId().equals(app.getCurrentId() + "2")) {
+                                writeString("COMMAND@ conference Owner wants to leave");
+                                app.willExit = true;
+                            }
+                            else {
+                                app.canExit = true;
+                            }
+                        }
+                    }
+                    else {
                         shortToast("waiting others' response");
                     }
-                    if (!app.canExit) {
-                        if (app.getSessionId().equals(app.getCurrentId() + "2")) {
-                            writeString("COMMAND@ conference Owner wants to leave");
-                            app.willExit = true;
-                        }
-                        else {
-                            app.canExit = true;
-                        }
-                    }
-
-                     */
-                    app.canExit = true;
                     newZoomOutFragment.newZoomOutExitButtonClicked = false;
                 }
                 if (app.willExit) {
@@ -1938,6 +1946,7 @@ public class SessionSelectorActivity extends AppCompatActivity implements App.On
                 }
 
                 if (app.canExit) {
+                    DialogOfOwnersLeavingIsOn = false;
                     app.canExit = false;
                     app.willExit = false;
                     hideSoftKeyBoard();
@@ -1962,8 +1971,6 @@ public class SessionSelectorActivity extends AppCompatActivity implements App.On
                     }
                     app.isInConference = false;
                     app.neededToRejoinConference1 = true;
-
-
                 }
                 /*
                 if (app.duplicateConnectionsOccurred) {
@@ -2070,8 +2077,11 @@ public class SessionSelectorActivity extends AppCompatActivity implements App.On
                     }
                     else if (app.neededToJoinConference2TimeOut)
                         setFragment(R.id.newMainFrame, emptyFragment);
-                    else if (!app.neededToRejoinConference2 && !app.neededToInvite && !app.ANeededToJoinConference2)
+                    else if (!app.neededToRejoinConference2 && !app.neededToInvite && !app.ANeededToJoinConference2) {
                         setFragment(R.id.newMainFrame, firstPageFragment);
+
+                    }
+
                     IdTalkTo = "";
                     app.neededToRejoinConference1 = false;
                 }
@@ -2197,6 +2207,32 @@ public class SessionSelectorActivity extends AppCompatActivity implements App.On
                     Log.d("ppppp+: n2", Integer.toString(num));
                     Log.d("ppppp+: remoteMediaTableSize", Integer.toString(remoteMediaTable.size()));
                 }
+
+                //if (app.getSessionId().charAt(app.getSessionId().length()-1) == '2'
+                        //&& !app.beingModifiedConnections
+                        //&& newZoomOutFragment.isZoomOutLayoutManagerReady
+                        //&& !app.newConnectionOccupied) {
+                    /**
+                     * remove unneeded remote medias
+                     */
+                    //Set<String> unneeded = app.dLinkedList.getUnneeded();
+                    //for (String str : unneeded) {
+                        //if (remoteMediaTable.containsKey(str)) {
+                            //newZoomOutFragment.remoteLayoutManager.removeRemoteView(app.remoteMediaTable.get(str).getId());
+                            //remoteMediaTable.remove(str);
+                        //}
+                    //}
+                    /**
+                     * add needed remote medias
+                     */
+                    //Set<String> curr = app.dLinkedList.getCurrent();
+                    //for (String str : curr) {
+                        //if (!remoteMediaTable.containsKey(str)) {
+                            //newZoomOutFragment.remoteLayoutManager.addRemoteView(app.remoteMediaTable.get(str).getId(), app.remoteMediaTable.get(str).getView());
+                            //remoteMediaTable.put(str, app.remoteMediaTable.get(str));
+                        //}
+                    //}
+                //}
 
                 if (app.needResetRemoteMedias) {
                     newZoomOutFragment.remoteLayoutManager.removeRemoteViews();
@@ -2425,6 +2461,18 @@ public class SessionSelectorActivity extends AppCompatActivity implements App.On
                     app.neededToReJoinConference2TimeOut = false;
                     app.neededToReJoinConference2TimeOutBackConference1 = false;
                 }
+                /*
+                if (!app.isNotModifyingScreen) {
+                    app.modifyingScreenCounter = 1;
+                }
+                if (app.modifyingScreenCounter >= 1) {
+                    app.modifyingScreenCounter++;
+                    if (app.modifyingScreenCounter == 2) {
+                        app.modifyingScreenCounter = 0;
+                        app.isNotModifyingScreen = true;
+                    }
+                }
+                 */
 
                 if (!isNetworkConnected() || !internetIsConnected()) {
                     if (!InternetConnectDialogIsOn) {

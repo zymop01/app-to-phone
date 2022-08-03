@@ -271,6 +271,7 @@ public class NewService1 extends Service {
                 if (allowToJoin && !app.threadTwoOn) {
                     app.setSessionId(app.conference2Id);
                     joinAsync();
+                    app.exitButtonClicked = false;
                     app.threadTwoOn = true;
                     app.callingCounter = 0;
                     char lastLetter = app.getSessionId().charAt(app.getSessionId().length()-1);
@@ -363,6 +364,7 @@ public class NewService1 extends Service {
                     app.lastSignalling3 = app.signalling;
                     app.threadFourOn = true;
                     joinAsync();
+                    app.exitButtonClicked = false;
                     GroupChatStarted = false;
                 }
                 if (LeaveChatStarted) {
